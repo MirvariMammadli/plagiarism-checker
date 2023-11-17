@@ -1,8 +1,20 @@
+import os
 import asyncio
+from functions.comparer import comparer
 
-from functions.comparator import comparer
+def process_all_problems(sorted_folder_path):
+    problems = os.listdir(sorted_folder_path)
+
+    for problem in problems:
+        problem_path = os.path.join(sorted_folder_path, problem)
+        submission_numbers = os.listdir(problem_path)
+        
+        for submission_number in submission_numbers:
+            submission_path = os.path.join(problem_path, submission_number)
+            
+            asyncio.run(comparer(submission_path))
 
 if __name__ == "__main__":
-    folder_path = "sample_codes"
-    
-    asyncio.run(comparer(folder_path))
+    sorted_folder_path = "data/ioi2020_day1_sorted"
+
+    process_all_problems(sorted_folder_path)
