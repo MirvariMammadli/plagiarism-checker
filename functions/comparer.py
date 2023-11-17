@@ -20,6 +20,10 @@ async def comparer(folder_path):
             for j in range(i + 1, len(cpp_files)):
                 file_1_path = os.path.join(folder_path, cpp_files[i])
                 file_2_path = os.path.join(folder_path, cpp_files[j])
+
+                if cpp_files[i][:4] == cpp_files[j][:4]:
+                    continue
+
                 task = loop.run_in_executor(executor, cpp_checker, file_1_path, file_2_path)
                 tasks.append((cpp_files[i], cpp_files[j], task))
     
@@ -27,7 +31,8 @@ async def comparer(folder_path):
         similarity, common_lines = await task
         file1_name = os.path.splitext(file1_name)[0]  
         file2_name = os.path.splitext(file2_name)[0]  
-        print(f"{file1_name}'s code's similarity to {file2_name}'s code is: {similarity * 100:.2f}%")
-        print("Common Lines:")
-        for line in common_lines:
-            print(line)
+        if similarity * 100 > 50:
+            print(f"{file1_name}'s code's similarity to {file2_name}'s code is: {similarity * 100:.2f}%")
+        # print("Common Lines:")
+        # for line in common_lines:
+        #     print(line)
