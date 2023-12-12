@@ -14,7 +14,10 @@ def process_all_problems(sorted_folder_path):
             
             asyncio.run(comparer(submission_path))
 
+    # asyncio.run(comparer(sorted_folder_path))
+
 if __name__ == "__main__":
     sorted_folder_path = "data/ioi2020_day1_sorted"
+    # sorted_folder_path = "sample_codes"
 
     process_all_problems(sorted_folder_path)

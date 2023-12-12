@@ -1,5 +1,6 @@
 import os
-import asyncio 
+import asyncio
+import pandas as pd
 
 from concurrent.futures import ThreadPoolExecutor
 from functions.cpp_checker import cpp_checker
@@ -27,12 +28,17 @@ async def comparer(folder_path):
                 task = loop.run_in_executor(executor, cpp_checker, file_1_path, file_2_path)
                 tasks.append((cpp_files[i], cpp_files[j], task))
     
+    results = []
     for file1_name, file2_name, task in tasks:
         similarity, common_lines = await task
         file1_name = os.path.splitext(file1_name)[0]  
         file2_name = os.path.splitext(file2_name)[0]  
-        if similarity * 100 > 50:
-            print(f"{file1_name}'s code's similarity to {file2_name}'s code is: {similarity * 100:.2f}%")
-        # print("Common Lines:")
-        # for line in common_lines:
-        #     print(line)
+        # if similarity * 100:
+        results.append((file1_name, file2_name, similarity * 100))
+
+    file_name = folder_path.split('/')[2] + ' ' + folder_path.split('/')[3]
+
+    df = pd.DataFrame(results, columns=['file1_name', 'file2_name', 'similarity'])
+    df.to_excel(f'data/excels/{file_name}.xlsx', index=False)
+    print("Results saved to comparison_results.xlsx")
+
